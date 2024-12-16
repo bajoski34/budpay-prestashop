@@ -34,7 +34,7 @@ class BudpayWebhookhandlerModuleFrontController extends ModuleFrontController
     }
 
     /**
-     * Post process
+     * Post process to handle webhook settings.
      *
      * @throws PrestaShopDatabaseException
      * @throws PrestaShopException
