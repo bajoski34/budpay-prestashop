@@ -5,15 +5,15 @@ if (!defined('_PS_VERSION_')) {
 }
 
 /**
- * Class PaypalAbstarctModuleFrontController
+ * Class BudpayWebhookhandlerModuleFrontController
  */
 class BudpayWebhookhandlerModuleFrontController extends ModuleFrontController
 {
-    /** @var Stripe $module */
+    /** @var Budpay $module */
     public $module;
 
     /**
-     * StripeHookModuleFrontController constructor.
+     * BudpayWebhookhandlerModuleFrontController constructor.
      *
      * @throws PrestaShopException
      */
@@ -45,40 +45,73 @@ class BudpayWebhookhandlerModuleFrontController extends ModuleFrontController
         $body = file_get_contents('php://input');
 
         if (!empty($body) && $data = json_decode($body, true)) {
-            // Verify with Budpay.
             try {
-                //TODO: Handle hooks.
-            } catch (\Exception $e) {
+                // Determine the type of notification
+                if (isset($data['notify']) && isset($data['notifyType'])) {
+                    switch ($data['notify']) {
+                        case 'transaction':
+                            $this->handleTransaction($data);
+                            break;
+                        case 'payout':
+                            $this->handlePayout($data);
+                            break;
+                        default:
+                            throw new Exception('Unknown notification type');
+                    }
+                } else {
+                    throw new Exception('Invalid payload structure');
+                }
+
+                die('ok');
+            } catch (Exception $e) {
+                Logger::addLog('Webhook Error: ' . $e->getMessage(), 3);
                 die('ko');
             }
-            // switch ($data['type']) {
-            //     case 'review.closed':
-            //         $this->processApproved($event);
-
-            //         break;
-            //     case 'charge.refunded':
-            //         $this->processRefund($event);
-
-            //         break;
-            //     case 'charge.succeeded':
-            //         $this->processSucceeded($event);
-
-            //         break;
-            //     case 'charge.captured':
-            //         Logger::addLog(json_encode($event));
-            //         $this->processCaptured($event);
-
-            //         break;
-            //     case 'charge.failed':
-            //         $this->processFailed($event);
-
-            //         break;
-            // }
-
-            die('ok');
         }
 
         header('Content-Type: text/plain');
         die('ko');
+    }
+
+    /**
+     * Handle transaction notifications.
+     *
+     * @param array $data
+     * @return void
+     */
+    private function handleTransaction(array $data)
+    {
+        if ($data['notifyType'] === 'successful') {
+            // Extract transaction details
+            $transaction = $data['data'];
+
+            // Log transaction success
+            Logger::addLog('Transaction Success: ' . json_encode($transaction));
+
+            // TODO: Update order status, record transaction in DB, etc.
+        } else {
+            throw new Exception('Unhandled transaction notification type');
+        }
+    }
+
+    /**
+     * Handle payout notifications.
+     *
+     * @param array $data
+     * @return void
+     */
+    private function handlePayout(array $data)
+    {
+        if ($data['notifyType'] === 'successful') {
+            // Extract payout details
+            $payout = $data['data'];
+
+            // Log payout success
+            Logger::addLog('Payout Success: ' . json_encode($payout));
+
+            // TODO: Update payout record in DB, notify user, etc.
+        } else {
+            throw new Exception('Unhandled payout notification type');
+        }
     }
 }
