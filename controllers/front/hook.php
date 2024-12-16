@@ -46,6 +46,27 @@ class BudpayWebhookhandlerModuleFrontController extends ModuleFrontController
 
         if (!empty($body) && $data = json_decode($body, true)) {
             try {
+                // Validate webhook signature
+                $is_live = Tools::getValue(Budpay::GO_LIVE);
+                $sec = Tools::getValue(Budpay::SECRET_KEY_TEST);
+                $pub = Tools::getValue(Budpay::PUBLIC_KEY_TEST);
+                if($is_live === 1) {
+                    $sec = Tools::getValue(Budpay::SECRET_KEY_LIVE);
+                    $pub = Tools::getValue(Budpay::SECRET_KEY_LIVE);
+                }
+                
+                $merchantsignature = hash_hmac("SHA512", $pub, $sec);
+                $webhooksignature = $_SERVER['HTTP_SIGNATURE'] ?? '';
+
+                if ($merchantsignature !== $webhooksignature) {
+                    Logger::addLog('Fraudulent Attempt: Invalid signature', 3);
+                    die('DON’T HONOUR. IT IS A FRAUDULENT ATTEMPT');
+                }
+
+                // Signature is valid
+                Logger::addLog('Valid Webhook Signature');
+
+                
                 // Determine the type of notification
                 if (isset($data['notify']) && isset($data['notifyType'])) {
                     switch ($data['notify']) {
