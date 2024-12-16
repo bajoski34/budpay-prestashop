@@ -710,8 +710,11 @@ class Budpay extends PaymentModule
      */
     private function installConfiguration()
     {
-        return (bool) Configuration::updateGlobalValue(static::CONFIG_PO_EXTERNAL_ENABLED, '1')
-            && (bool) Configuration::updateGlobalValue(static::CONFIG_PO_EMBEDDED_ENABLED, '1');
+        return (bool) Configuration::updateGlobalValue(static::GO_LIVE, '0')
+            && (bool) Configuration::updateGlobalValue(static::SECRET_KEY_TEST, 'PBLK-TEST-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX-X')
+            && (bool) Configuration::updateGlobalValue(static::PUBLIC_KEY_TEST, 'SECRK-TEST-XXXXXXXXXXXXXXXXXXXXXXXXXXXX')
+            && (bool) Configuration::updateGlobalValue(static::SECRET_KEY_LIVE, 'SECR-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX-X')
+            && (bool) Configuration::updateGlobalValue(static::PUBLIC_KEY_LIVE, 'PUBK-XXXXXXXXXXXXXXXXXXXXXXXX-X');
     }
 
     /**
@@ -721,8 +724,11 @@ class Budpay extends PaymentModule
      */
     private function uninstallConfiguration()
     {
-        return (bool) Configuration::deleteByName(static::CONFIG_PO_EXTERNAL_ENABLED)
-            && (bool) Configuration::deleteByName(static::CONFIG_PO_EMBEDDED_ENABLED);
+        return (bool) Configuration::deleteByName(static::GO_LIVE)
+        && (bool) Configuration::deleteByName(static::SECRET_KEY_TEST)
+        && (bool) Configuration::deleteByName(static::PUBLIC_KEY_TEST)
+        && (bool) Configuration::deleteByName(static::SECRET_KEY_LIVE)
+        && (bool) Configuration::deleteByName(static::PUBLIC_KEY_LIVE);
     }
 
     /**
