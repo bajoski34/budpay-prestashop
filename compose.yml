@@ -45,7 +45,7 @@ services:
       - prestashop_network
     volumes:
       - type: bind
-        source: .
+        source: ./
         target: /var/www/html/modules/budpay
 networks:
   prestashop_network:
