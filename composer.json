@@ -6,8 +6,9 @@
     "license": "AFL-3.0",
     "authors": [
         {
-            "name": "PrestaShop SA",
-            "email": "contact@prestashop.com"
+            "name": "Budpay Developers",
+            "email": "info@budpay.com",
+            "homepage": "https://devs.budpay.com"
         }
     ],
     "config": {
@@ -23,7 +24,7 @@
     "autoload": {
         "classmap": [
             "controllers",
-            "paymentexample.php"
+            "budpay.php"
         ]
     },
     "scripts": {
@@ -34,5 +35,5 @@
     "require-dev": {
         "prestashop/php-dev-tools": "~3.0"
     },
-    "author": "PrestaShop"
+    "author": "BudpayDevelopers"
 }
