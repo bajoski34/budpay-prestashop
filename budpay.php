@@ -26,17 +26,14 @@ if (!defined('_PS_VERSION_')) {
 
 class Budpay extends PaymentModule
 {
-    // const CONFIG_PO_EXTERNAL_ENABLED = 'BUDPAY_PO_EXTERNAL_ENABLED';
-    const CONFIG_PO_EMBEDDED_ENABLED = 'BUDPAY_PO_EMBEDDED_ENABLED';
-    const MODULE_ADMIN_CONTROLLER = 'AdminConfigureBudpay';
+    const CONFIG_PO_BUDPAY_ENABLED = 'BUDPAY_OS_CHECKOUT';
     const GO_LIVE = 'BUDPAY_GO_LIVE';
     const SECRET_KEY_TEST = 'BUDPAY_SECRET_KEY_TEST';
     const PUBLIC_KEY_TEST = 'BUDPAY_PUBLIC_KEY_TEST';
     const SECRET_KEY_LIVE = 'BUDPAY_SECRET_KEY_LIVE';
     const PUBLIC_KEY_LIVE = 'BUDPAY_PUBLIC_KEY_LIVE';
-
+    const MODULE_ADMIN_CONTROLLER = 'AdminConfigureBudpay';
     const HOOKS = [
-        'actionPaymentCCAdd',
         'actionObjectShopAddAfter',
         'paymentOptions',
         'displayAdminOrderLeft',
@@ -106,61 +103,6 @@ class Budpay extends PaymentModule
     }
 
     /**
-     * This hook is used to save additional information will be displayed on BO Order View, Payment block with "Details" button
-     *
-     * @param array $params
-     */
-    public function hookActionPaymentCCAdd(array $params)
-    {
-        if (empty($params['paymentCC'])) {
-            return;
-        }
-
-        /** @var OrderPayment $orderPayment */
-        $orderPayment = $params['paymentCC'];
-
-        if (false === Validate::isLoadedObject($orderPayment) || empty($orderPayment->order_reference)) {
-            return;
-        }
-
-        /** @var Order[] $orderCollection */
-        $orderCollection = Order::getByReference($orderPayment->order_reference);
-
-        foreach ($orderCollection as $order) {
-            if ($this->name !== $order->module) {
-                return;
-            }
-        }
-
-        if ('embedded' !== Tools::getValue('option') || !Configuration::get(static::CONFIG_PO_EMBEDDED_ENABLED)) {
-            return;
-        }
-
-        $cardNumber = Tools::getValue('cardNumber');
-        $cardBrand = Tools::getValue('cardBrand');
-        $cardHolder = Tools::getValue('cardHolder');
-        $cardExpiration = Tools::getValue('cardExpiration');
-
-        if (false === empty($cardNumber) && Validate::isGenericName($cardNumber)) {
-            $orderPayment->card_number = $cardNumber;
-        }
-
-        if (false === empty($cardBrand) && Validate::isGenericName($cardBrand)) {
-            $orderPayment->card_brand = $cardBrand;
-        }
-
-        if (false === empty($cardHolder) && Validate::isGenericName($cardHolder)) {
-            $orderPayment->card_holder = $cardHolder;
-        }
-
-        if (false === empty($cardExpiration) && Validate::isGenericName($cardExpiration)) {
-            $orderPayment->card_expiration = $cardExpiration;
-        }
-
-        $orderPayment->save();
-    }
-
-    /**
      * This hook called after a new Shop is created
      *
      * @param array $params
@@ -208,13 +150,7 @@ class Budpay extends PaymentModule
 
         $paymentOptions = [];
 
-        // if (Configuration::get(static::CONFIG_PO_EXTERNAL_ENABLED)) { // for a redirect flow
-        //     $paymentOptions[] = $this->getExternalPaymentOption();
-        // }
-
-        if (Configuration::get(static::CONFIG_PO_EMBEDDED_ENABLED)) {
-            $paymentOptions[] = $this->getEmbeddedPaymentOption();
-        }
+        $paymentOptions[] = $this->getEmbeddedPaymentOption();
 
         return $paymentOptions;
     }
@@ -552,9 +488,9 @@ class Budpay extends PaymentModule
     private function installOrderState()
     {
         return $this->createOrderState(
-            static::CONFIG_PO_EMBEDDED_ENABLED,
+            static::CONFIG_PO_BUDPAY_ENABLED,
             [
-                'en' => 'Awaiting offline payment',
+                'en' => 'Awaiting Budpay payment',
             ],
             '#00ffff',
             false,
@@ -565,7 +501,7 @@ class Budpay extends PaymentModule
             false,
             false,
             true,
-            'awaiting-offline-payment'
+            'awaiting-budpay-payment'
         );
     }
 
