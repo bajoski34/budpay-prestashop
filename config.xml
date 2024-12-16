@@ -2,7 +2,7 @@
 <module>
     <name>budpay</name>
     <displayName><![CDATA[Budpay]]></displayName>
-    <version><![CDATA[2.0.0]]></version>
+    <version><![CDATA[1.0.0]]></version>
     <description><![CDATA[Accept Payment on your store with Budpay]]></description>
     <author><![CDATA[PrestaShop]]></author>
     <tab><![CDATA[payments_gateways]]></tab>

@@ -39,6 +39,7 @@ services:
       PS_INSTALL_AUTO: 1
       PS_FOLDER_ADMIN: adminbudpay
       PS_FOLDER_INSTALL: installbudpay
+      PS_ENABLE_SSL: 1
       PS_DOMAIN: 8080-olaobajuabr-budpayprest-0denx92m027.ws-eu117.gitpod.io
     networks:
       - prestashop_network

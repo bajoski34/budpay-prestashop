@@ -195,6 +195,10 @@ class Budpay extends PaymentModule
      */
     public function hookPaymentOptions(array $params)
     {
+        if (!$this->active) {
+            return;
+        }
+
         /** @var Cart $cart */
         $cart = $params['cart'];
 
@@ -213,6 +217,17 @@ class Budpay extends PaymentModule
         }
 
         return $paymentOptions;
+    }
+
+    public function getConfigFieldsValues()
+    {
+        return array(
+            'SECRET_KEY_TEST' => Tools::getValue(self::SECRET_KEY_TEST, Configuration::get(self::SECRET_KEY_TEST)),
+            'PUBLIC_KEY_TEST' => Tools::getValue(self::PUBLIC_KEY_TEST, Configuration::get(self::PUBLIC_KEY_TEST)),
+            'PUBLIC_KEY_LIVE' => Tools::getValue(self::PUBLIC_KEY_LIVE, Configuration::get(self::PUBLIC_KEY_LIVE)),
+            'SECRET_KEY_LIVE' => Tools::getValue(self::SECRET_KEY_LIVE, Configuration::get(self::SECRET_KEY_LIVE)),
+            'GO_LIVE' => Tools::getValue(self::GO_LIVE, Configuration::get(self::GO_LIVE))
+        );
     }
 
     /**
@@ -537,7 +552,7 @@ class Budpay extends PaymentModule
     private function installOrderState()
     {
         return $this->createOrderState(
-            static::CONFIG_OS_OFFLINE,
+            static::CONFIG_PO_EMBEDDED_ENABLED,
             [
                 'en' => 'Awaiting offline payment',
             ],

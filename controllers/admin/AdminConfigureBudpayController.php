@@ -27,23 +27,40 @@ class AdminConfigureBudpayController extends ModuleAdminController
 
         parent::__construct();
 
-        // if (empty(Currency::checkPaymentCurrencies($this->module->id))) {
-        //     $this->warnings[] = $this->l('No currency has been set for this module.');
-        // }
-
         $this->fields_options = [
             $this->module->name => [
                 'fields' => [
-                    // Budpay::CONFIG_PO_EXTERNAL_ENABLED => [
-                    //     'type' => 'bool',
-                    //     'title' => $this->l('Allow to pay with external method'),
-                    //     'validation' => 'isBool',
-                    //     'cast' => 'intval',
-                    //     'required' => false,
-                    // ],
-                    Budpay::CONFIG_PO_EMBEDDED_ENABLED => [
+                    Budpay::GO_LIVE => [
                         'type' => 'bool',
-                        'title' => $this->l('Allow to pay with embedded method'),
+                        'title' => $this->l('Check this Box to go Live'),
+                        'validation' => 'isBool',
+                        'cast' => 'intval',
+                        'required' => false,
+                    ],
+                    Budpay::SECRET_KEY_TEST => [
+                        'type' => 'bool',
+                        'title' => $this->l('Enter your Budpay Test Secret Key'),
+                        'validation' => 'isBool',
+                        'cast' => 'intval',
+                        'required' => false,
+                    ],
+                    Budpay::PUBLIC_KEY_TEST => [
+                        'type' => 'bool',
+                        'title' => $this->l('Enter your Budpay Test Public Key'),
+                        'validation' => 'isBool',
+                        'cast' => 'intval',
+                        'required' => false,
+                    ],
+                    Budpay::SECRET_KEY_LIVE => [
+                        'type' => 'bool',
+                        'title' => $this->l('Enter your Budpay Live Secret Key'),
+                        'validation' => 'isBool',
+                        'cast' => 'intval',
+                        'required' => false,
+                    ],
+                    Budpay::PUBLIC_KEY_LIVE => [
+                        'type' => 'bool',
+                        'title' => $this->l('Enter your Budpay Public Secret Key'),
                         'validation' => 'isBool',
                         'cast' => 'intval',
                         'required' => false,
